@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mystic Charms</title>
+
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { 
+        background: linear-gradient(135deg, #fff1f7 0%, #f8e8f0 100%); 
+        font-family: Arial; 
+        color: #333;
+    }
+
+    .cart-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 22px 20px;
+        background: white;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    .left-nav { display: flex; align-items: center; }
+    .back-link { display: flex; align-items: center; text-decoration: none; }
+    .icon { width: 30px; height: 30px; }
+    .home-text {
+        margin-left: 8px;
+        font-size: 25px;
+        color: #3d0026;
+        font-family: "Times new roman";
+        font-weight: bold;
+    }
+    .home-text:hover { color: #d63384; }
+    .center-nav { flex: 1; text-align: center; }
+    .cart-title {
+        font-size: 25px;
+        margin: 0;
+        font-weight: 600;
+        font-family: "Times new roman";
+    }
+
+    .cart-container {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+    .cart-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    .cart-count {
+        font-size: 20px;
+        color: #666;
+        font-family: "Times New Roman";
+    }
+    .cart-item {
+        display: flex;
+        align-items: center;
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+        transition: 0.3s;
+    }
+    .cart-item:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+    .cart-item img {
+        width: 90px;
+        height: 90px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-right: 25px;
+        flex-shrink: 0;
+    }
+    .cart-item-info { flex: 1; }
+    .cart-item-name {
+        font-size: 20px;
+        font-family: "Times New Roman";
+        color: #3d0026;
+        margin-bottom: 8px;
+    }
+    .cart-item-price {
+        font-size: 22px;
+        color: #d63384;
+        font-weight: bold;
+        font-family: "Times New Roman";
+    }
+
+    .quantity-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 10px 0;
+    }
+    .qty-btn {
+        background: #3d0026;
+        color: white;
+        border: none;
+        width: 32px;
+        height: 32px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-family: "Times New Roman";
+        font-size: 16px;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+    .qty-btn:hover:not(:disabled) { 
+        background: #d63384;
+        transform: scale(1.05);
+    }
+    .qty-btn:disabled { 
+        background: #ccc;
+        cursor: not-allowed;
+    }
+    .qty-display {
+        font-size: 18px;
+        font-weight: bold;
+        color: #3d0026;
+        font-family: "Times New Roman";
+        min-width: 25px;
+        text-align: center;
+    }
+
+    .remove-btn {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 25px;
+        cursor: pointer;
+        font-family: "Times New Roman";
+        font-size: 14px;
+        font-weight: bold;
+        transition: 0.3s;
+        margin-left: 20px;
+        flex-shrink: 0;
+    }
+    .remove-btn:hover { background: #c82333; }
+
+    .empty-cart {
+        text-align: center;
+        padding: 80px 20px;
+    }
+    .empty-text {
+        font-size: 24px;
+        color: #666;
+        font-family: "Times New Roman";
+        margin-bottom: 20px;
+    }
+    .total-section {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        margin-top: 40px;
+        text-align: center;
+    }
+    .total-price {
+        font-size: 32px;
+        color: #3d0026;
+        font-weight: bold;
+        font-family: "Times New Roman";
+        margin-bottom: 25px;
+    }
+    .checkout-btn {
+        background: #3d0026;
+        color: white;
+        border: none;
+        padding: 18px 50px;
+        border-radius: 30px;
+        font-size: 20px;
+        font-family: "Times New Roman";
+        font-weight: bold;
+        cursor: pointer;
+        width: 100%;
+        transition: 0.3s;
+    }
+    .checkout-btn:hover { background: #d63384; transform: translateY(-2px); }
+
+    @media (max-width: 1024px) {
+        .cart-nav { padding: 18px 15px; }
+        .home-text { font-size: 22px; }
+        .cart-title { font-size: 22px; }
+        .cart-container { margin: 35px auto; padding: 0 18px; }
+        .cart-item { padding: 20px; margin-bottom: 18px; gap: 18px; }
+        .cart-item img { width: 80px; height: 80px; margin-right: 0; }
+        .cart-item-name { font-size: 18px; }
+        .cart-item-price { font-size: 20px; }
+    }
+
+    @media (max-width: 768px) {
+        .cart-nav { padding: 15px 12px; flex-direction: column; gap: 10px; }
+        .left-nav { width: 100%; justify-content: center; }
+        .center-nav { width: 100%; }
+        .cart-title { font-size: 18px; }
+        .home-text { font-size: 18px; margin-left: 6px; }
+        .icon { width: 26px; height: 26px; }
+        
+        .cart-container { margin: 30px auto; padding: 0 15px; max-width: 100%; }
+        .cart-count { font-size: 18px; }
+        .cart-header { margin-bottom: 30px; }
+        
+        .cart-item { 
+            flex-direction: column; 
+            text-align: center; 
+            padding: 18px; 
+            margin-bottom: 16px;
+            gap: 0;
+        }
+        .cart-item img { 
+            margin-right: 0; 
+            margin-bottom: 15px; 
+            width: 75px;
+            height: 75px;
+        }
+        .cart-item-info { flex: 1; width: 100%; }
+        .cart-item-name { font-size: 16px; margin-bottom: 6px; }
+        .cart-item-price { font-size: 18px; }
+        .quantity-controls { margin: 8px 0 12px 0; justify-content: center; }
+        .qty-btn { width: 28px; height: 28px; font-size: 14px; }
+        .qty-display { font-size: 16px; }
+        .remove-btn { 
+            margin-left: 0; 
+            margin-top: 12px; 
+            padding: 10px 20px;
+            font-size: 13px;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .cart-nav { padding: 12px 10px; }
+        .cart-title { font-size: 16px; }
+        .home-text { font-size: 16px; margin-left: 5px; }
+        .icon { width: 24px; height: 24px; }
+        
+        .cart-container { margin: 25px auto; padding: 0 12px; }
+        .cart-header { margin-bottom: 25px; }
+        .cart-count { font-size: 16px; }
+        
+        .cart-item { 
+            padding: 15px; 
+            margin-bottom: 14px;
+            border-radius: 10px;
+        }
+        .cart-item img { 
+            margin-bottom: 12px; 
+            width: 70px;
+            height: 70px;
+            border-radius: 8px;
+        }
+        .cart-item-name { font-size: 14px; margin-bottom: 5px; }
+        .cart-item-price { font-size: 16px; }
+        .quantity-controls { margin: 6px 0 10px 0; gap: 6px; }
+        .qty-btn { width: 26px; height: 26px; font-size: 12px; }
+        .qty-display { font-size: 14px; min-width: 20px; }
+        .remove-btn { 
+            padding: 8px 16px;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        
+        .summary { padding: 15px; }
+        .summary-row { margin-bottom: 10px; font-size: 14px; }
+        .checkout-btn { padding: 12px; font-size: 14px; margin-top: 15px; }
+    }
+
+    @media (max-width: 480px) {
+        .cart-nav { padding: 10px 8px; }
+        .cart-title { font-size: 14px; }
+        .home-text { font-size: 14px; margin-left: 4px; font-size: 14px; }
+        .icon { width: 22px; height: 22px; }
+        
+        .cart-container { margin: 20px auto; padding: 0 10px; }
+        .cart-header { margin-bottom: 20px; }
+        .cart-count { font-size: 14px; }
+        
+        .cart-item { 
+            padding: 12px; 
+            margin-bottom: 12px;
+            border-radius: 8px;
+        }
+        .cart-item img { 
+            margin-bottom: 10px; 
+            width: 60px;
+            height: 60px;
+            border-radius: 6px;
+        }
+        .cart-item-name { font-size: 13px; margin-bottom: 4px; }
+        .cart-item-price { font-size: 15px; }
+        .quantity-controls { margin: 5px 0 8px 0; gap: 5px; }
+        .qty-btn { width: 24px; height: 24px; font-size: 11px; }
+        .qty-display { font-size: 13px; min-width: 18px; }
+        .remove-btn { 
+            padding: 7px 14px;
+            font-size: 11px;
+            margin-top: 8px;
+        }
+        
+        .summary { padding: 12px; }
+        .summary-row { margin-bottom: 8px; font-size: 12px; }
+        .checkout-btn { padding: 10px; font-size: 12px; margin-top: 12px; }
+    }
+
+    @media (max-height: 500px) and (orientation: landscape) {
+        .cart-nav { padding: 12px; }
+        .cart-title { font-size: 16px; }
+        .cart-container { margin: 20px auto; padding: 0 12px; }
+        .cart-item { padding: 12px; margin-bottom: 10px; }
+        .cart-item img { width: 60px; height: 60px; margin-bottom: 10px; }
+        .cart-item-name { font-size: 14px; }
+        .remove-btn { padding: 8px 16px; font-size: 12px; margin-top: 8px; }
+    }
+</style>
+
+</head>
+<body>
+
+    <nav class="cart-nav">
+        <div class="left-nav">
+            <a href="index.html" class="back-link">
+                <img src="back.png" alt="Back" class="icon">
+                <span class="home-text">Home</span>
+            </a>
+        </div>
+
+        <div class="center-nav">
+            <h2 class="cart-title">Favorites / Added to Cart</h2>
+        </div>
+    </nav>
+
+    <div class="cart-container">
+        <div class="cart-header">
+            <div id="cartCount" class="cart-count">0 items in cart</div>
+        </div>
+
+        <div id="cartItems"></div>
+        
+        <div id="emptyCart" class="empty-cart" style="display: none;">
+            <div class="empty-text">No items added to cart yet</div>
+            <div style="font-size: 18px; color: #999;">
+                Click the <span style="color: #3d0026; font-size: 24px;">♥</span> on products to add them here
+            </div>
+        </div>
+
+        <div id="cartTotal" class="total-section" style="display: none;">
+            <div id="totalPrice" class="total-price">₱0.00</div>
+            <button class="checkout-btn" onclick="proceedToCheckout()">
+                Proceed to Checkout
+            </button>
+        </div>
+    </div>
+
+    <script>
+document.addEventListener("DOMContentLoaded", function() {
+    const userLogin = JSON.parse(localStorage.getItem("userLogin"));
+    if (!userLogin) {
+        alert("Please log in to view your cart.");
+        window.location.href = "login.html";
+        return;
+    }
+
+    localStorage.removeItem("directCheckoutProduct");
+
+    const userId = userLogin.userId;
+    const cartKey = `cart_${userId}`;
+    
+    let cart = [];
+    
+    // ── Product catalogue with image filenames ──
+    const products = {
+        "001": { name: "Pink Mirage Bracelet",     price: 40, image: "image2.jpg"  },
+        "002": { name: "Pastel Dream Bracelet",    price: 35, image: "image3.jpg"  },
+        "003": { name: "Starlit Bloom Bracelet",   price: 35, image: "image4.jpg"  },
+        "004": { name: "Flutter Hearts Bracelet",  price: 30, image: "image11.jpg" },
+        "005": { name: "Lovewing Bracelet",        price: 30, image: "image10.jpg" },
+        "006": { name: "Dewdrop Bracelet",         price: 35, image: "image12.jpg" },
+        "007": { name: "Vanilla Sky Bracelet",     price: 40, image: "image13.jpg" },
+        "008": { name: "Celestial Sweet Bracelet", price: 20, image: "image14.jpg" },
+        "009": { name: "Petal Bliss Bracelet",     price: 35, image: "image15.jpg" },
+        "010": { name: "Sweet Spell Keychain",     price: 35, image: "image16.jpg" },
+        "011": { name: "Blossom Buddy Keychain",   price: 35, image: "image17.jpg" },
+        "012": { name: "Daydream Keychain",        price: 40, image: "image18.jpg" },
+        "013": { name: "Sunny Charm Keychain",     price: 35, image: "image19.jpg" }
+    };
+
+    function loadCart() {
+        try {
+            const saved = localStorage.getItem(cartKey);
+            cart = saved ? JSON.parse(saved) : [];
+        } catch (e) {
+            console.error("Cart load error:", e);
+            cart = [];
+            localStorage.removeItem(cartKey);
+        }
+    }
+    
+    function saveCart() {
+        try {
+            localStorage.setItem(cartKey, JSON.stringify(cart));
+        } catch (e) {
+            console.error("Cart save error:", e);
+        }
+    }
+    
+    loadCart();
+    
+    const cartItemsEl = document.getElementById("cartItems");
+    const emptyCartEl = document.getElementById("emptyCart");
+    const cartTotalEl = document.getElementById("cartTotal");
+    const cartCountEl = document.getElementById("cartCount");
+    const totalPriceEl = document.getElementById("totalPrice");
+
+    function renderCart() {
+        loadCart();
+        
+        cartItemsEl.innerHTML = "";
+        
+        if (cart.length === 0) {
+            emptyCartEl.style.display = "block";
+            cartTotalEl.style.display = "none";
+            cartCountEl.textContent = "0 items";
+            return;
+        }
+        
+        emptyCartEl.style.display = "none";
+        let totalItems = 0;
+        let totalPrice = 0;
+        
+        cart.forEach((itemData) => {
+            const id  = itemData.id;
+            const qty = itemData.quantity || 1;
+            
+            if (products[id]) {
+                const product = products[id];
+                totalItems += qty;
+                totalPrice += product.price * qty;
+                
+                const cartItem = document.createElement("div");
+                cartItem.className = "cart-item";
+                cartItem.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}">
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${product.name}</div>
+                        <div class="cart-item-price">₱${(product.price * qty).toLocaleString()}.00</div>
+                        <div class="quantity-controls">
+                            <button class="qty-btn" onclick="updateQuantity('${id}', -1)" ${qty <= 1 ? 'disabled' : ''}>−</button>
+                            <span class="qty-display">${qty}</span>
+                            <button class="qty-btn" onclick="updateQuantity('${id}', 1)">+</button>
+                        </div>
+                    </div>
+                    <button class="remove-btn" onclick="removeFromCart('${id}')">Remove</button>
+                `;
+                cartItemsEl.appendChild(cartItem);
+            }
+        });
+        
+        cartCountEl.textContent = `${totalItems} item${totalItems !== 1 ? 's' : ''}`;
+        totalPriceEl.textContent = `₱${totalPrice.toLocaleString()}.00`;
+        cartTotalEl.style.display = "block";
+    }
+
+    window.updateQuantity = function(id, change) {
+        loadCart();
+        cart = cart.map(item => {
+            if (item.id === id) {
+                const newQty = Math.max(1, (item.quantity || 1) + change);
+                return { ...item, quantity: newQty };
+            }
+            return item;
+        });
+        saveCart();
+        renderCart();
+    };
+
+    window.removeFromCart = function(id) {
+        loadCart();
+        cart = cart.filter(item => item.id !== id);
+        saveCart();
+        renderCart();
+    };
+
+    window.proceedToCheckout = function() {
+        loadCart();
+        if (cart.length > 0) {
+            saveCart();
+            localStorage.setItem("checkoutFromCart", "true");
+            window.location.href = "checkout.html";
+        } else {
+            alert("Cart is empty!");
+        }
+    };
+
+    window.addEventListener('focus', renderCart);
+    
+    renderCart();
+});
+    </script>
+
+</body>
+</html>

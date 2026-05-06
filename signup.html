@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mystic Charms - Sign Up</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            background: linear-gradient(135deg, #fff1f7 0%, #f8e8f0 100%);
+            font-family: "Times New Roman", Arial, sans-serif;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .signup-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            max-width: 450px;
+            width: 100%;
+            padding: 50px 40px;
+        }
+
+        .signup-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-text {
+            font-size: 32px;
+            font-weight: bold;
+            color: #3d0026;
+            font-family: "Times New Roman";
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            font-size: 14px;
+            color: #d63384;
+            font-style: italic;
+        }
+
+        .signup-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #3d0026;
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+
+        .signup-subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #3d0026;
+            margin-bottom: 8px;
+            font-family: "Times New Roman";
+        }
+
+        input[type="email"],
+        input[type="tel"],
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: "Times New Roman";
+            transition: 0.3s;
+        }
+
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #d63384;
+            box-shadow: 0 0 0 3px rgba(214, 51, 132, 0.1);
+        }
+
+        .signup-btn {
+            width: 100%;
+            padding: 14px;
+            background: #d63384;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            font-family: "Times New Roman";
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 20px;
+        }
+
+        .signup-btn:hover {
+            background: #b62a70;
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            display: none;
+            padding: 12px;
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            display: none;
+            padding: 12px;
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .login-link a {
+            color: #d63384;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .password-requirement {
+            font-size: 12px;
+            color: #666;
+            margin-top: 8px;
+        }
+
+        .requirement-met {
+            color: #28a745;
+        }
+
+        @media (max-width: 1024px) {
+            .signup-container {
+                padding: 45px 35px;
+                max-width: 450px;
+            }
+            .logo-text { font-size: 28px; }
+            .signup-title { font-size: 22px; }
+            .form-group { margin-bottom: 18px; }
+            label { font-size: 13px; }
+            input { padding: 12px; font-size: 13px; }
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 15px; }
+            .signup-container {
+                padding: 40px 30px;
+                max-width: 100%;
+                border-radius: 16px;
+            }
+            .logo-text { font-size: 24px; margin-bottom: 8px; }
+            .tagline { font-size: 13px; }
+            .signup-title { font-size: 20px; margin-top: 25px; }
+            .signup-subtitle { font-size: 13px; margin-bottom: 25px; }
+            .form-group { margin-bottom: 16px; }
+            label { font-size: 12px; margin-bottom: 6px; }
+            input { padding: 11px; font-size: 12px; }
+            .signup-btn { padding: 12px; font-size: 15px; margin-top: 18px; }
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 12px; }
+            .signup-container {
+                padding: 30px 20px;
+                max-width: 100%;
+                border-radius: 14px;
+            }
+            .signup-header { margin-bottom: 25px; }
+            .logo-text {
+                font-size: 20px;
+                margin-bottom: 6px;
+            }
+            .tagline { font-size: 12px; }
+            .signup-title {
+                font-size: 18px;
+                margin-top: 20px;
+                margin-bottom: 8px;
+            }
+            .signup-subtitle { 
+                font-size: 12px; 
+                margin-bottom: 20px;
+            }
+            .form-group { margin-bottom: 14px; }
+            label { 
+                font-size: 11px; 
+                margin-bottom: 5px;
+            }
+            input { 
+                padding: 10px; 
+                font-size: 11px;
+                border-radius: 8px;
+            }
+            .signup-btn { 
+                padding: 11px; 
+                font-size: 14px; 
+                margin-top: 15px;
+                border-radius: 8px;
+            }
+            .error-message, .success-message { 
+                padding: 8px; 
+                font-size: 12px; 
+                margin-bottom: 15px;
+                border-radius: 6px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 10px; }
+            .signup-container {
+                padding: 25px 16px;
+                border-radius: 12px;
+            }
+            .signup-header { margin-bottom: 20px; }
+            .logo-text { font-size: 18px; margin-bottom: 5px; }
+            .tagline { font-size: 11px; }
+            .signup-title { 
+                font-size: 16px; 
+                margin-top: 18px; 
+                margin-bottom: 6px;
+            }
+            .signup-subtitle { 
+                font-size: 11px; 
+                margin-bottom: 18px;
+            }
+            .form-group { margin-bottom: 12px; }
+            label { 
+                font-size: 10px; 
+                margin-bottom: 4px;
+            }
+            input { 
+                padding: 9px; 
+                font-size: 10px;
+                border-radius: 7px;
+            }
+            .signup-btn { 
+                padding: 10px; 
+                font-size: 13px; 
+                margin-top: 12px;
+                border-radius: 7px;
+            }
+            .error-message, .success-message { 
+                padding: 7px; 
+                font-size: 10px; 
+                margin-bottom: 12px;
+                border-radius: 5px;
+            }
+        }
+
+        @media (max-height: 500px) and (orientation: landscape) {
+            .signup-container { 
+                padding: 30px 25px; 
+                max-height: 85vh;
+                overflow-y: auto;
+            }
+            .signup-header { margin-bottom: 15px; }
+            .logo-text { font-size: 20px; margin-bottom: 4px; }
+            .signup-title { font-size: 16px; margin-top: 12px; }
+            .signup-subtitle { font-size: 11px; margin-bottom: 12px; }
+            .form-group { margin-bottom: 10px; }
+            label { font-size: 11px; margin-bottom: 3px; }
+            input { padding: 8px; font-size: 11px; }
+            .signup-btn { padding: 10px; font-size: 12px; margin-top: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <div class="signup-header">
+            <div class="logo-text">♡ MYSTIC CHARMS</div>
+            <div class="tagline">Designed with quiet charm ♥</div>
+        </div>
+
+        <div class="signup-title">Create Account</div>
+        <div class="signup-subtitle">Join us to start shopping and collecting charms</div>
+
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+
+        <form id="signupForm">
+            <div class="form-group">
+                <label for="fullname">Full Name *</label>
+                <input type="text" id="fullname" placeholder="Your full name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" placeholder="example@email.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="mobile">Mobile Number *</label>
+                <input type="tel" id="mobile" placeholder="09xxxxxxxxx" pattern="^09\d{9}$" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password *</label>
+                <input type="password" id="password" placeholder="Create a strong password" required>
+                <div class="password-requirement">
+                    Password must be at least 6 characters
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password *</label>
+                <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+            </div>
+
+            <button type="submit" class="signup-btn">Create Account</button>
+        </form>
+
+        <div class="login-link">
+            Already have an account? <a href="login.html">Sign In</a>
+        </div>
+    </div>
+
+    <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCDNdTMCcFZEts9nYT0ILUeN_v7YY09380",
+    authDomain: "mywebsite-829b5.firebaseapp.com",
+    projectId: "mywebsite-829b5",
+    storageBucket: "mywebsite-829b5.firebasestorage.app",
+    messagingSenderId: "322237844842",
+    appId: "1:322237844842:web:eee18bf1c0f08fd748a913",
+    databaseURL: "https://mywebsite-829b5-default-rtdb.firebaseio.com"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+function showError(message) {
+    const el = document.getElementById('errorMessage');
+    el.textContent = message;
+    el.classList.add('show');
+}
+
+function showSuccess(message) {
+    const el = document.getElementById('successMessage');
+    el.textContent = message;
+    el.classList.add('show');
+}
+
+function clearMessages() {
+    document.getElementById('errorMessage').classList.remove('show');
+    document.getElementById('successMessage').classList.remove('show');
+}
+
+function validateEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function validateMobile(mobile) {
+    return /^09\d{9}$/.test(mobile);
+}
+
+document.getElementById('signupForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    clearMessages();
+
+    const fullname = document.getElementById('fullname').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const mobile = document.getElementById('mobile').value.trim();
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    // VALIDATION
+    if (!fullname) return showError('Full name is required.');
+    if (!validateEmail(email)) return showError('Invalid email.');
+    if (!validateMobile(mobile)) return showError('Invalid mobile number.');
+    if (password.length < 6) return showError('Password must be at least 6 characters.');
+    if (password !== confirmPassword) return showError('Passwords do not match.');
+
+    try {
+        const dbRef = ref(db);
+        const snapshot = await get(child(dbRef, "users"));
+
+        if (snapshot.exists()) {
+            const users = Object.values(snapshot.val());
+
+            const exists = users.some(u => 
+                (u.email && u.email === email) || 
+                (u.mobile && u.mobile === mobile)
+            );
+
+            if (exists) {
+                return showError('Email or mobile already registered.');
+            }
+        }
+
+        // 🔥 SAFE USER ID
+        const userId = email.replace(/\./g, "_");
+
+        // 🔥 FINAL USER DATA (ROLE ADDED)
+        const userData = {
+            userId: userId,
+            fullname: fullname,
+            email: email,
+            mobile: mobile,
+            password: password,
+            role: "user", // ✅ DEFAULT ROLE (IMPORTANT)
+            createdAt: new Date().toISOString()
+        };
+
+        await set(ref(db, "users/" + userId), userData);
+
+        console.log("USER SAVED:", userData);
+
+        showSuccess('Account created successfully! Redirecting...');
+
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 1500);
+
+    } catch (error) {
+        console.error("Firebase Error:", error);
+        showError("Failed to save data: " + error.message);
+    }
+});
+</script>
+</body>
+</html>

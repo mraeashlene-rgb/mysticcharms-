@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mystic Charms - Orders</title>
+
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+        background: #f8e8f0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        color: #333;
+        line-height: 1.5;
+    }
+
+    /* ── NAV ── */
+    .cart-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 22px 20px;
+        background: white;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    .left-nav  { display: flex; align-items: center; }
+    .back-link { display: flex; align-items: center; text-decoration: none; }
+    .icon      { width: 30px; height: 30px; }
+    .home-text {
+        margin-left: 8px;
+        font-size: 25px;
+        color: #3d0026;
+        font-family: "Times New Roman";
+        font-weight: bold;
+    }
+    .home-text:hover { color: #d63384; }
+    .center-nav { flex: 1; text-align: center; }
+    .cart-title {
+        font-size: 25px;
+        margin: 0;
+        font-weight: 600;
+        font-family: "Times New Roman";
+    }
+
+    /* ── LAYOUT ── */
+    .orders-container {
+        max-width: 900px;
+        margin: 20px auto;
+        padding: 0 20px 60px;
+    }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+        text-align: center;
+        padding: 60px 40px;
+        color: #3d0026;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        margin-bottom: 25px;
+    }
+    .empty-title { font-size: 20px; font-weight: 500; margin-bottom: 8px; }
+    .empty-text  { font-size: 16px; }
+
+    /* ── ORDER CARD ── */
+    .order-card {
+        background: white;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        border-left: 5px solid #3d0026;
+        overflow: hidden;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .order-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+    .order-header {
+        padding: 20px 24px 16px;
+        border-bottom: 1px solid #f0f0f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    .order-number {
+        font-size: 16px;
+        font-weight: 700;
+        color: #3d0026;
+        flex-shrink: 0;
+    }
+    .order-status {
+        padding: 5px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        flex-shrink: 0;
+    }
+    .status-confirmed             { background: #fff3cd; color: #7a5800; }
+    .status-preparing             { background: #cce5ff; color: #003d7a; }
+    .status-shipped               { background: #d1ecf1; color: #0a4f5a; }
+    .status-delivered,
+    .status-completed             { background: #d4edda; color: #145520; }
+    .status-pending-verification,
+    .status-pending_verification  { background: #ffe0b2; color: #7a3700; }
+
+    .order-date {
+        font-size: 12px;
+        color: #999;
+        white-space: nowrap;
+        margin-left: auto;
+    }
+    .order-details { padding: 16px 24px 20px; }
+
+    /* ── INFO GRID ── */
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+        border: 1px solid #f0f0f0;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 16px;
+    }
+    .info-cell {
+        padding: 10px 14px;
+        border-bottom: 1px solid #f0f0f0;
+        border-right: 1px solid #f0f0f0;
+        font-size: 13px;
+    }
+    .info-cell:nth-child(2n)        { border-right: none; }
+    .info-cell:nth-last-child(-n+2) { border-bottom: none; }
+    .info-label {
+        font-size: 11px;
+        color: #999;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 3px;
+    }
+    .info-value { color: #2d2d2d; font-weight: 500; }
+
+    /* ── PAYMENT BADGES ── */
+    .pay-badge {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    .pay-cash  { background: #e8f5e9; color: #2e7d32; }
+    .pay-gcash { background: #e8eaf6; color: #283593; }
+    .pay-sub-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 5px;
+        font-size: 11px;
+        font-weight: 600;
+        margin-left: 5px;
+    }
+    .psub-pending  { background: #fff3cd; color: #7a5800; }
+    .psub-cash     { background: #e8f5e9; color: #2e7d32; }
+    .psub-verified { background: #d4edda; color: #145520; }
+
+    /* ── ITEMS TABLE ── */
+    .items-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 12px;
+        font-size: 13px;
+    }
+    .items-table th {
+        text-align: left;
+        padding: 7px 10px;
+        background: #f8f0f4;
+        color: #3d0026;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+    .items-table th:last-child { text-align: right; }
+    .items-table td {
+        padding: 8px 10px;
+        border-bottom: 1px solid #f5f5f5;
+        color: #333;
+    }
+    .items-table td:last-child { text-align: right; font-weight: 600; }
+    .items-table tr:last-child td { border-bottom: none; }
+
+    .order-total-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 10px 0;
+        border-top: 2px solid #f0f0f0;
+        font-size: 15px;
+        font-weight: 700;
+        color: #3d0026;
+    }
+
+    /* ── RATE BUTTON ── */
+    .rate-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin: 16px 0 0;
+        padding: 10px 18px;
+        background: #3d0026;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+        transition: background 0.2s;
+    }
+    .rate-button:hover { background: #d63384; }
+
+    /* ── RATING SUMMARY (already rated) ── */
+    .rating-summary {
+        margin-top: 14px;
+        padding: 14px;
+        border-radius: 10px;
+        background: #f8f0f4;
+        color: #3d0026;
+        font-size: 13px;
+    }
+    .rating-stars {
+        margin-top: 8px;
+        display: inline-flex;
+        gap: 3px;
+    }
+    .star {
+        width: 24px;
+        height: 24px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: #ccc;
+        cursor: pointer;
+        transition: color 0.15s;
+    }
+    .star:hover,
+    .star.filled { color: #ffbf00; }
+
+    /* ── COMPLETED SECTION ── */
+    .completed-order-card { border-left-color: #28a745; opacity: 0.85; }
+    .completed-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #28a745;
+        margin: 10px 0 16px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    /* ── SHARED ── */
+    .hidden { display: none !important; }
+
+    /* ── RATING MODAL ── */
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(61, 0, 38, 0.55);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        z-index: 50;
+    }
+    .modal-content {
+        width: min(520px, 100%);
+        max-height: calc(100vh - 60px);
+        overflow-y: auto;
+        background: white;
+        border-radius: 18px;
+        padding: 28px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    }
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+    .close-icon {
+        width: 36px;
+        height: 36px;
+        border: none;
+        background: #f0f0f0;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        cursor: pointer;
+        color: #333;
+        flex-shrink: 0;
+        transition: 0.2s;
+    }
+    .close-icon:hover { background: #3d0026; color: white; }
+    .modal-title {
+        font-size: 22px;
+        margin-bottom: 4px;
+        color: #3d0026;
+        font-family: "Times New Roman";
+    }
+    .modal-text { color: #555; font-size: 14px; margin: 0; }
+
+    .feedback-textarea {
+        width: 100%;
+        min-height: 110px;
+        padding: 14px;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        resize: vertical;
+        font-size: 15px;
+        margin: 14px 0 18px;
+        font-family: inherit;
+        transition: border-color 0.2s;
+    }
+    .feedback-textarea:focus { outline: none; border-color: #d63384; }
+
+    .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    .modal-actions button {
+        padding: 11px 18px;
+        border-radius: 8px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.2s, color 0.2s;
+    }
+    .modal-actions .close-button             { background: #f0f0f0; color: #333; }
+    .modal-actions .close-button:hover       { background: #ddd; }
+    .modal-actions .submit-button            { background: #3d0026; color: white; }
+    .modal-actions .submit-button:hover:not(:disabled) { background: #d63384; }
+    .modal-actions .submit-button:disabled   { background: #bbb; cursor: not-allowed; }
+
+    /* ── THANK YOU OVERLAY ── */
+    .thankyou-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(61, 0, 38, 0.6);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        z-index: 200;
+    }
+    .thankyou-overlay.animating { animation: tyFadeIn 0.25s ease forwards; }
+    @keyframes tyFadeIn {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+    }
+
+    .thankyou-card {
+        background: white;
+        border-radius: 24px;
+        padding: 50px 40px 44px;
+        max-width: 380px;
+        width: 100%;
+        text-align: center;
+        box-shadow: 0 24px 64px rgba(61, 0, 38, 0.22);
+    }
+    .thankyou-card.animating { animation: tyPopIn 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+    @keyframes tyPopIn {
+        from { opacity: 0; transform: scale(0.80) translateY(24px); }
+        to   { opacity: 1; transform: scale(1)    translateY(0);    }
+    }
+
+    .thankyou-heart {
+        font-size: 54px;
+        display: block;
+        margin-bottom: 18px;
+        color: #d63384;
+        line-height: 1;
+    }
+    .thankyou-heart.animating { animation: tyHeartbeat 0.55s ease 0.25s both; }
+    @keyframes tyHeartbeat {
+        0%   { transform: scale(0);    opacity: 0; }
+        55%  { transform: scale(1.28);             }
+        100% { transform: scale(1);    opacity: 1; }
+    }
+
+    .thankyou-title {
+        font-family: "Times New Roman";
+        font-size: 30px;
+        font-weight: 700;
+        color: #3d0026;
+        margin-bottom: 10px;
+    }
+    .thankyou-stars {
+        display: flex;
+        justify-content: center;
+        gap: 4px;
+        margin: 6px 0 16px;
+        font-size: 28px;
+        color: #ffbf00;
+    }
+    .thankyou-text {
+        font-size: 14px;
+        color: #888;
+        line-height: 1.75;
+        margin-bottom: 30px;
+    }
+    .thankyou-close-btn {
+        background: #3d0026;
+        color: white;
+        border: none;
+        padding: 14px 44px;
+        border-radius: 50px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+    .thankyou-close-btn:hover {
+        background: #d63384;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 22px rgba(214, 51, 132, 0.35);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+        .orders-container { padding: 30px 20px; }
+        .order-card { padding: 18px; }
+        .order-header { padding: 0 0 14px 0; }
+        .order-item { padding: 12px 0; }
+    }
+
+    @media (max-width: 768px) {
+        .cart-nav { padding: 15px 12px; }
+        .cart-title { font-size: 18px; }
+        .home-text { font-size: 16px; }
+        .icon { width: 24px; height: 24px; }
+        
+        .orders-container { padding: 25px 15px; }
+        .info-grid { grid-template-columns: 1fr; }
+        .info-cell:nth-child(2n) { border-right: none; }
+        .info-cell:nth-last-child(-n+2) { border-bottom: 1px solid #f0f0f0; }
+        .info-cell:last-child { border-bottom: none; }
+        .info-label { font-size: 12px; }
+        .info-value { font-size: 14px; }
+        
+        .order-card { padding: 16px; }
+        .order-header { 
+            flex-direction: column; 
+            align-items: flex-start; 
+            padding: 0 0 12px 0;
+        }
+        .order-date { margin-left: 0; margin-top: 8px; }
+        .order-item { padding: 10px 0; font-size: 13px; }
+        .thankyou-title { font-size: 24px; }
+    }
+
+    @media (max-width: 600px) {
+        .orders-container { padding: 20px 12px; }
+        .info-grid { grid-template-columns: 1fr; gap: 10px; }
+        .info-cell { 
+            padding: 10px; 
+            border-right: none !important; 
+            border-bottom: 1px solid #f0f0f0 !important;
+        }
+        .info-cell:last-child { border-bottom: none !important; }
+        .info-label { font-size: 11px; }
+        .info-value { font-size: 13px; }
+        
+        .order-card { 
+            padding: 14px; 
+            margin-bottom: 14px;
+            border-left: 4px solid #d63384;
+        }
+        .order-header { 
+            flex-direction: column; 
+            align-items: flex-start; 
+            padding: 0 0 10px 0;
+        }
+        .order-header h3 { font-size: 14px; }
+        .order-date { 
+            margin-left: 0; 
+            margin-top: 6px;
+            font-size: 12px;
+        }
+        .order-status { padding: 4px 10px; font-size: 11px; }
+        .order-item { 
+            padding: 8px 0; 
+            font-size: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        .order-item:last-child { border-bottom: none; }
+        .order-actions { margin-top: 10px; gap: 8px; }
+        .action-btn { padding: 8px 12px; font-size: 11px; }
+        .thankyou-card { padding: 28px 16px 24px; }
+        .thankyou-title { font-size: 20px; margin-bottom: 16px; }
+    }
+
+    @media (max-width: 480px) {
+        .cart-nav { padding: 12px 10px; }
+        .cart-title { font-size: 14px; }
+        .home-text { font-size: 14px; margin-left: 4px; }
+        .icon { width: 22px; height: 22px; }
+        
+        .orders-container { padding: 15px 10px; }
+        .info-grid { gap: 8px; }
+        .info-cell { padding: 8px; }
+        .info-label { font-size: 10px; }
+        .info-value { font-size: 12px; }
+        
+        .order-card { 
+            padding: 12px; 
+            margin-bottom: 12px;
+            border-left: 3px solid #d63384;
+        }
+        .order-header h3 { font-size: 13px; }
+        .order-header { padding: 0 0 8px 0; }
+        .order-date { 
+            margin-top: 5px;
+            font-size: 11px;
+        }
+        .order-status { 
+            padding: 3px 8px; 
+            font-size: 10px;
+            border-radius: 6px;
+        }
+        .order-item { 
+            padding: 6px 0; 
+            font-size: 11px;
+        }
+        .order-actions { margin-top: 8px; gap: 6px; }
+        .action-btn { 
+            padding: 7px 10px; 
+            font-size: 10px;
+            border-radius: 6px;
+        }
+        .thankyou-card { padding: 24px 12px 20px; }
+        .thankyou-title { font-size: 18px; margin-bottom: 12px; }
+    }
+
+    @media (max-height: 500px) and (orientation: landscape) {
+        .orders-container { padding: 15px 12px; }
+        .order-card { padding: 12px; margin-bottom: 10px; }
+        .order-header { padding: 0 0 8px 0; }
+        .order-item { padding: 6px 0; font-size: 12px; }
+        .action-btn { padding: 6px 10px; font-size: 11px; }
+    }
+</style>
+</head>
+<body>
+
+<nav class="cart-nav">
+    <div class="left-nav">
+        <a href="index.html" class="back-link">
+            <img src="back.png" alt="Back" class="icon">
+            <span class="home-text">Home</span>
+        </a>
+    </div>
+    <div class="center-nav">
+        <h2 class="cart-title">My Orders</h2>
+    </div>
+</nav>
+
+<div class="orders-container">
+    <div id="ordersList"></div>
+</div>
+
+<!-- ── RATING MODAL ── -->
+<div class="modal-overlay hidden" id="ratingModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div>
+                <h2 class="modal-title" id="modalTitle">Rate Your Order</h2>
+                <p class="modal-text">Share your rating and feedback about your order.</p>
+            </div>
+            <button class="close-icon" type="button" id="closeModalIcon" aria-label="Close">&times;</button>
+        </div>
+        <div class="rating-stars" id="ratingStars">
+            <span class="star" data-value="1">&#9733;</span>
+            <span class="star" data-value="2">&#9733;</span>
+            <span class="star" data-value="3">&#9733;</span>
+            <span class="star" data-value="4">&#9733;</span>
+            <span class="star" data-value="5">&#9733;</span>
+        </div>
+        <textarea id="feedbackInput" class="feedback-textarea" placeholder="Write your feedback here..."></textarea>
+        <div class="modal-actions">
+            <button class="close-button"  type="button" id="closeModalButton">Cancel</button>
+            <button class="submit-button" type="button" id="submitRatingButton">Submit</button>
+        </div>
+    </div>
+</div>
+
+<!-- ── THANK YOU CONFIRMATION ── -->
+<div class="thankyou-overlay hidden" id="thankyouOverlay">
+    <div class="thankyou-card" id="thankyouCard">
+        <span class="thankyou-heart" id="thankyouHeart">&#9829;</span>
+        <div class="thankyou-title">Thank You!</div>
+        <div class="thankyou-stars" id="thankyouStars"></div>
+        <p class="thankyou-text">Your rating has been saved.<br>We truly appreciate your feedback!</p>
+        <button class="thankyou-close-btn" id="thankyouDoneBtn">Done</button>
+    </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCDNdTMCcFZEts9nYT0ILUeN_v7YY09380",
+    authDomain: "mywebsite-829b5.firebaseapp.com",
+    projectId: "mywebsite-829b5",
+    storageBucket: "mywebsite-829b5.appspot.com",
+    messagingSenderId: "322237844842",
+    appId: "1:322237844842:web:eee18bf1c0f08fd748a913",
+    databaseURL: "https://mywebsite-829b5-default-rtdb.firebaseio.com"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getDatabase(app);
+
+/* ── DOM refs ── */
+const ordersList      = document.getElementById("ordersList");
+const ratingModal     = document.getElementById("ratingModal");
+const ratingStarsEl   = document.getElementById("ratingStars");
+const feedbackInput   = document.getElementById("feedbackInput");
+const submitBtn       = document.getElementById("submitRatingButton");
+const closeBtnText    = document.getElementById("closeModalButton");
+const closeBtnIcon    = document.getElementById("closeModalIcon");
+const modalTitle      = document.getElementById("modalTitle");
+const thankyouOverlay = document.getElementById("thankyouOverlay");
+const thankyouCard    = document.getElementById("thankyouCard");
+const thankyouHeart   = document.getElementById("thankyouHeart");
+const thankyouDoneBtn = document.getElementById("thankyouDoneBtn");
+const thankyouStars   = document.getElementById("thankyouStars");
+
+/* ── State ── */
+let activeOrderId   = null;
+let activeStarValue = 0;
+let ordersById      = {};
+
+/* ════════════════════ HELPERS ════════════════════ */
+
+function escapeHtml(text) {
+    const d = document.createElement("div");
+    d.textContent = String(text ?? "");
+    return d.innerHTML;
+}
+
+function formatCurrency(v) {
+    return "₱" + Number(v).toFixed(2);
+}
+
+function getStatusLabel(status) {
+    const map = {
+        confirmed:            "Confirmed",
+        preparing:            "Preparing",
+        shipped:              "Shipped",
+        delivered:            "Delivered",
+        completed:            "Completed",
+        pending_verification: "Pending Verification"
+    };
+    return map[status] || (status ? status.replace(/_/g, " ") : "Confirmed");
+}
+
+function isDone(status) {
+    return status === "delivered" || status === "completed";
+}
+
+/* ════════════════════ PAYMENT BADGE ════════════════════ */
+
+function paymentHTML(order) {
+    const method  = (order.paymentMethod || "").toLowerCase();
+    const pStatus = (order.paymentStatus  || "").toLowerCase();
+    const label   = method === "gcash" ? "GCash" : "Cash";
+    const cls     = method === "gcash" ? "pay-gcash" : "pay-cash";
+
+    let subLabel = "", subCls = "";
+    if (pStatus === "pending_verification" || pStatus === "pending verification") {
+        subLabel = "Pending Verification"; subCls = "psub-pending";
+    } else if (pStatus.includes("cash_on") || pStatus.includes("cash on")) {
+        subLabel = "Pay on " + (pStatus.includes("delivery") ? "Delivery" : "Meetup");
+        subCls = "psub-cash";
+    } else if (pStatus === "verified") {
+        subLabel = "Verified"; subCls = "psub-verified";
+    }
+
+    return `<span class="pay-badge ${cls}">${label}</span>${
+        subLabel ? `<span class="pay-sub-badge ${subCls}">${subLabel}</span>` : ""
+    }`;
+}
+
+/* ════════════════════ ITEMS TABLE ════════════════════ */
+
+function itemsTableHTML(items) {
+    if (!items || !items.length) return `<p style="font-size:13px;color:#999;">No items</p>`;
+    const rows = items.map(item => {
+        const p = Number(item.price)    || 0;
+        const q = Number(item.quantity) || 0;
+        return `<tr>
+            <td>${escapeHtml(item.name || "Item")}</td>
+            <td style="text-align:center;">${q}</td>
+            <td>₱${p.toFixed(2)}</td>
+            <td>₱${(p * q).toFixed(2)}</td>
+        </tr>`;
+    }).join("");
+    return `<table class="items-table">
+        <thead><tr>
+            <th>Item</th>
+            <th style="text-align:center;">Qty</th>
+            <th>Price</th>
+            <th>Subtotal</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+    </table>`;
+}
+
+/* ════════════════════ CARD BUILDER ════════════════════ */
+
+function buildCard(order, label, isCompleted) {
+    const items         = Array.isArray(order.items) ? order.items : [];
+    const total         = Number(order.total) || 0;
+    const deliveryLabel = order.deliveryMethod === "delivery" ? "Delivery" : "Meetup (Daet)";
+    const statusKey     = (order.status || "confirmed").replace(/_/g, "-");
+    const dateStr       = order.date
+        ? new Date(order.date).toLocaleDateString("en-US", {
+            year: "numeric", month: "short", day: "numeric",
+            hour: "2-digit", minute: "2-digit"
+          })
+        : "N/A";
+
+    const hasRating = order.hasRated === true || Number(order.rating) > 0;
+
+    let ratingBlock = "";
+    if (isCompleted) {
+        if (hasRating) {
+            const stars = Array.from({ length: 5 }, (_, i) =>
+                `<span class="star ${i < Number(order.rating) ? "filled" : ""}">&#9733;</span>`
+            ).join("");
+            ratingBlock = `
+                <div class="rating-summary">
+                    <strong>Your rating:</strong>
+                    <div class="rating-stars">${stars}</div>
+                    ${order.feedback
+                        ? `<div style="margin-top:8px;font-size:13px;color:#555;">${escapeHtml(order.feedback)}</div>`
+                        : ""}
+                </div>
+                <button class="rate-button" data-order-id="${escapeHtml(order.id)}" data-edit="true">Edit Rating</button>`;
+        } else {
+            ratingBlock = `<button class="rate-button" data-order-id="${escapeHtml(order.id)}">Rate Your Order</button>`;
+        }
+    }
+
+    return `
+    <div class="order-card${isCompleted ? " completed-order-card" : ""}">
+        <div class="order-header">
+            <span class="order-number">${escapeHtml(label)}</span>
+            <span class="order-status status-${statusKey}">${getStatusLabel(order.status)}</span>
+            <span class="order-date">${dateStr}</span>
+        </div>
+        <div class="order-details">
+            <div class="info-grid">
+                <div class="info-cell">
+                    <div class="info-label">Customer</div>
+                    <div class="info-value">${escapeHtml(order.name  || "N/A")}</div>
+                </div>
+                <div class="info-cell">
+                    <div class="info-label">Phone</div>
+                    <div class="info-value">${escapeHtml(order.phone || "N/A")}</div>
+                </div>
+                <div class="info-cell">
+                    <div class="info-label">Delivery</div>
+                    <div class="info-value">${deliveryLabel}</div>
+                </div>
+                <div class="info-cell">
+                    <div class="info-label">Payment</div>
+                    <div class="info-value">${paymentHTML(order)}</div>
+                </div>
+            </div>
+            ${itemsTableHTML(items)}
+            <div class="order-total-row">
+                <span>Total</span>
+                <span>${formatCurrency(total)}</span>
+            </div>
+            ${ratingBlock}
+        </div>
+    </div>`;
+}
+
+/* ════════════════════ RENDER ════════════════════ */
+
+function renderOrders(all) {
+    ordersById = all.reduce((acc, o) => { acc[o.id] = o; return acc; }, {});
+
+    const active    = all.filter(o => !isDone(o.status));
+    const completed = all.filter(o =>  isDone(o.status));
+    let html = "";
+
+    if (!active.length && !completed.length) {
+        html = `<div class="empty-state">
+            <div class="empty-title">No orders yet</div>
+            <div class="empty-text">Your orders will appear here</div>
+            <a href="index.html" style="display:inline-block;margin-top:20px;color:#3d0026;font-weight:600;text-decoration:none;">Shop now</a>
+        </div>`;
+    } else {
+        if (!active.length) {
+            html += `<div class="empty-state" style="padding:30px;">
+                <div class="empty-title" style="font-size:16px;">No active orders</div>
+                <div class="empty-text"  style="font-size:14px;">Check your completed orders below</div>
+            </div>`;
+        }
+        active.slice().reverse().forEach((o, i) =>
+            html += buildCard(o, `Order #${active.length - i}`, false));
+
+        if (completed.length) {
+            html += `<div class="completed-title">Completed Orders (${completed.length})</div>`;
+            completed.slice().reverse().forEach((o, i) =>
+                html += buildCard(o, `Completed #${completed.length - i}`, true));
+        }
+    }
+
+    ordersList.innerHTML = html;
+}
+
+/* ════════════════════ FIREBASE ════════════════════ */
+
+document.addEventListener("DOMContentLoaded", () => {
+    const currentUser = JSON.parse(localStorage.getItem("userLogin") || "null");
+    if (!currentUser) { window.location.href = "login.html"; return; }
+
+    onValue(ref(db, "orders"), snapshot => {
+        const all = [];
+        if (snapshot.exists()) {
+            snapshot.forEach(child => {
+                const o = child.val();
+                if (o && o.userId === currentUser.userId) {
+                    all.push({
+                        ...o,
+                        id:             child.key,
+                        deliveryMethod: o.delivery || o.deliveryMethod || "",
+                        status:         o.status   || "confirmed",
+                        feedbackImages: Array.isArray(o.feedbackImages) ? o.feedbackImages : []
+                    });
+                }
+            });
+        }
+        renderOrders(all);
+    });
+});
+
+/* ════════════════════ OPEN MODAL ════════════════════ */
+
+ordersList.addEventListener("click", e => {
+    const btn = e.target.closest(".rate-button");
+    if (!btn) return;
+    const orderId = btn.dataset.orderId;
+    if (!orderId) return;
+    openRatingModal(btn.dataset.edit === "true", orderId);
+});
+
+/* ════════════════════ STARS ════════════════════ */
+
+ratingStarsEl.addEventListener("mouseover", e => {
+    const star = e.target.closest(".star");
+    if (!star) return;
+    const hv = Number(star.dataset.value);
+    ratingStarsEl.querySelectorAll(".star").forEach(s =>
+        s.classList.toggle("filled", Number(s.dataset.value) <= hv));
+});
+
+ratingStarsEl.addEventListener("mouseleave", () => updateStarDisplay(activeStarValue));
+
+ratingStarsEl.addEventListener("click", e => {
+    const star = e.target.closest(".star");
+    if (!star) return;
+    activeStarValue = Number(star.dataset.value) || 0;
+    updateStarDisplay(activeStarValue);
+});
+
+function updateStarDisplay(rating) {
+    ratingStarsEl.querySelectorAll(".star").forEach(s =>
+        s.classList.toggle("filled", Number(s.dataset.value) <= rating));
+}
+
+/* ════════════════════ MODAL OPEN / CLOSE ════════════════════ */
+
+function openRatingModal(isEdit, orderId) {
+    activeOrderId       = orderId;
+    activeStarValue     = 0;
+    feedbackInput.value = "";
+
+    const orderData = ordersById[orderId] || {};
+    if (isEdit && Number(orderData.rating) > 0) {
+        activeStarValue     = Number(orderData.rating);
+        feedbackInput.value = orderData.feedback || "";
+    }
+
+    modalTitle.textContent = isEdit ? "Edit Your Rating" : "Rate Your Order";
+    submitBtn.disabled     = false;
+    submitBtn.textContent  = "Submit";
+    updateStarDisplay(activeStarValue);
+    ratingModal.classList.remove("hidden");
+    setTimeout(() => feedbackInput.focus(), 50);
+}
+
+function closeRatingModal() {
+    ratingModal.classList.add("hidden");
+    activeOrderId       = null;
+    activeStarValue     = 0;
+    feedbackInput.value = "";
+    updateStarDisplay(0);
+    submitBtn.disabled    = false;
+    submitBtn.textContent = "Submit";
+}
+
+closeBtnText.addEventListener("click", closeRatingModal);
+closeBtnIcon.addEventListener("click", closeRatingModal);
+ratingModal.addEventListener("click", e => { if (e.target === ratingModal) closeRatingModal(); });
+
+document.addEventListener("keydown", e => {
+    if (e.key !== "Escape") return;
+    if (!ratingModal.classList.contains("hidden"))     closeRatingModal();
+    if (!thankyouOverlay.classList.contains("hidden")) closeThankyou();
+});
+
+/* ════════════════════ THANK YOU ════════════════════ */
+
+function showThankYou(rating) {
+    /* Build star display */
+    thankyouStars.innerHTML = Array.from({ length: 5 }, (_, i) =>
+        `<span>${i < rating ? "★" : "☆"}</span>`
+    ).join("");
+
+    /* Strip animation classes so they can re-fire each call */
+    thankyouOverlay.classList.remove("animating");
+    thankyouCard.classList.remove("animating");
+    thankyouHeart.classList.remove("animating");
+
+    /* Show the overlay */
+    thankyouOverlay.classList.remove("hidden");
+
+    /* Force a reflow — required so removing + re-adding class triggers animation */
+    void thankyouOverlay.offsetWidth;
+
+    /* Re-add animation classes */
+    thankyouOverlay.classList.add("animating");
+    thankyouCard.classList.add("animating");
+    thankyouHeart.classList.add("animating");
+}
+
+function closeThankyou() {
+    thankyouOverlay.classList.add("hidden");
+    thankyouOverlay.classList.remove("animating");
+    thankyouCard.classList.remove("animating");
+    thankyouHeart.classList.remove("animating");
+}
+
+thankyouDoneBtn.addEventListener("click", closeThankyou);
+thankyouOverlay.addEventListener("click", e => {
+    if (e.target === thankyouOverlay) closeThankyou();
+});
+
+/* ════════════════════ SUBMIT RATING (FIXED) ════════════════════ */
+
+submitBtn.addEventListener("click", async () => {
+    /* Snapshot values immediately — nothing must change these before we use them */
+    const orderId      = activeOrderId;
+    const ratingValue  = activeStarValue;
+    const feedbackText = feedbackInput.value.trim();
+
+    if (!orderId) return;
+
+    if (ratingValue < 1) {
+        alert("Please choose a star rating.");
+        return;
+    }
+    if (!feedbackText) {
+        alert("Please write a comment before submitting.");
+        return;
+    }
+
+    const currentUser = JSON.parse(localStorage.getItem("userLogin") || "null");
+    if (!currentUser) {
+        alert("Please log in to submit a rating.");
+        return;
+    }
+
+    /* Lock button to prevent double-submit */
+    submitBtn.disabled    = true;
+    submitBtn.textContent = "Saving…";
+
+    try {
+        const ratingData = {
+            rating:         ratingValue,
+            feedback:       feedbackText,
+            feedbackImages: [],
+            hasRated:       true,
+            ratedAt:        Date.now()
+        };
+
+        // FIXED: Only save to orders node, removed problematic ratings node
+        await update(ref(db, `orders/${orderId}`), ratingData);
+
+        /* Update local cache instantly so UI reflects change before Firebase re-fires */
+        if (ordersById[orderId]) {
+            ordersById[orderId] = { ...ordersById[orderId], ...ratingData };
+        }
+
+        /* Step 1 — close the rating modal (resets state) */
+        closeRatingModal();
+
+        /* Step 2 — show the beautiful centered thank-you with the CAPTURED ratingValue */
+        showThankYou(ratingValue);
+
+    } catch (err) {
+        console.error("Rating save error:", err);
+        submitBtn.disabled    = false;
+        submitBtn.textContent = "Submit";
+        alert("Something went wrong. Please try again.");
+    }
+});
+</script>
+</body>
+</html>

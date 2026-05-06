@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Settings - Mystic Charms</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body { 
+            background: linear-gradient(135deg, #fff1f7 0%, #f8e8f0 100%); 
+            font-family: Arial; 
+            color: #333;
+        }
+
+        /* ── NAV ── */
+        nav {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.9);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 30%;
+            vertical-align: middle;
+        }
+        
+        .logo-nav {
+            font-size: 25px;
+            font-family: "Times New Roman";
+            font-weight: bold;
+            color: #d63384;
+            margin-right: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-icons {
+            display: flex;
+            margin-right: 15px;
+            gap: 17px;
+            align-items: center;
+        }
+
+        .icon {
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+            object-fit: contain;
+        }
+
+        .icon:hover { opacity: 0.7; transition: 0.2s ease-in-out; }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+        
+        .nav-menu a {
+            text-decoration: none;
+            padding: 25px;
+            color: #3d0026;
+            font-size: 22px;
+            font-family: "Times New Roman";
+            font-weight: 500;
+        }
+
+        .nav-menu a:hover { color: #d63384; }
+
+        .user-menu {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 20px;
+            background: rgba(214, 51, 132, 0.1);
+            transition: 0.2s;
+        }
+
+        .user-profile:hover { background: rgba(214, 51, 132, 0.2); }
+
+        .user-profile-icon {
+            width: 30px;
+            height: 30px;
+            background: #d63384;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* ── PAGE ── */
+        section {
+            padding: 40px 50px 80px 50px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 { 
+            color: #3d0026; 
+            font-size: 50px; 
+            margin-bottom: 40px;
+            text-align: center; 
+            font-family: "Times New Roman"; 
+        }
+
+        /* ── MAIN CONTAINER ── */
+        .settings-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            width: 100%;
+            max-width: 90%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(214, 51, 132, 0.15);
+            overflow: hidden;
+            min-height: 520px;
+        }
+
+        /* ── LEFT SIDEBAR ── */
+        .settings-menu {
+            background: white;
+            border-right: 2px solid #fce0ef;
+            display: flex;
+            flex-direction: column;
+            padding: 30px 0 20px;
+        }
+
+        .menu-label {
+            font-family: "Times New Roman";
+            font-size: 20px;
+            font-weight: 700;
+            color: #b0497a;
+            text-transform: uppercase;
+            letter-spacing: 1.8px;
+            padding: 0 22px 12px;
+            border-bottom: 1px solid #fce0ef;
+            margin-bottom: 8px;
+        }
+
+        .settings-menu-item {
+            padding: 15px 22px;
+            cursor: pointer;
+            color: #3d0026;
+            font-family: "Times New Roman";
+            font-size: 20px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 4px solid transparent;
+            transition: all 0.25s ease;
+            user-select: none;
+        }
+
+        .settings-menu-item:hover {
+            background: #fce8f3;
+            color: #d63384;
+        }
+
+        .settings-menu-item.active {
+            background: linear-gradient(90deg, #fce0ef 0%, #fff5fa 100%);
+            color: #d63384;
+            border-left-color: #d63384;
+            font-weight: 600;
+        }
+
+        .menu-spacer { flex: 1; }
+
+        .settings-menu-divider {
+            height: 1px;
+            background: #fce0ef;
+            margin: 8px 22px;
+        }
+
+        .settings-menu-item.logout-item {
+            color: #c0203a;
+            font-weight: 600;
+        }
+
+        .settings-menu-item.logout-item:hover {
+            background: #fff0f0;
+            color: #a01828;
+        }
+
+        /* ── RIGHT CONTENT ── */
+        .settings-content-area {
+            background: linear-gradient(135deg, #fff1f7 0%, #fce8f3 100%);
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .settings-section {
+            display: none;
+            animation: fadeSlide 0.3s ease;
+        }
+
+        .settings-section.active { display: block; }
+
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateX(14px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+
+        .settings-section h2 {
+            color: #3d0026;
+            font-size: 36px;
+            font-family: "Times New Roman";
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(214, 51, 132, 0.25);
+            text-align: center;
+        }
+
+        /* ── ACCOUNT & SECURITY ── */
+        .account-layout {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .account-left {
+            width: 42%;
+            flex-shrink: 0;
+        }
+
+        .account-right {
+            flex: 1;
+            opacity: 0;
+            transform: translateX(30px);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+            pointer-events: none;
+        }
+
+        .account-right.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: all;
+        }
+
+        .panel-title {
+            font-family: "Times New Roman";
+            font-size: 25px;
+            font-weight: 700;
+            color: #3d0026;
+            border-bottom: 2px solid #d63384;
+            padding-bottom: 10px;
+            margin-bottom: 16px;
+        }
+
+        .acct-opt {
+            background: white;
+            border-radius: 12px;
+            padding: 15px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(214, 51, 132, 0.15);
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 6px rgba(214, 51, 132, 0.06);
+        }
+
+        .acct-opt:hover {
+            background: #fef0f7;
+            border-color: #d63384;
+            transform: translateX(3px);
+        }
+
+        .acct-opt.selected {
+            background: #fce0ef;
+            border-color: #d63384;
+        }
+
+        .acct-opt-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: #3d0026;
+        }
+
+        .acct-opt-value {
+            font-size: 13px;
+            color: #888;
+            margin-top: 3px;
+        }
+
+        .acct-arrow {
+            color: #d63384;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        /* edit panel */
+        .edit-box {
+            background: white;
+            border-radius: 14px;
+            padding: 24px;
+            border: 1px solid rgba(214, 51, 132, 0.15);
+            box-shadow: 0 3px 12px rgba(214, 51, 132, 0.08);
+        }
+
+        .edit-box-title {
+            font-family: "Times New Roman";
+            font-size: 18px;
+            font-weight: 700;
+            color: #3d0026;
+            border-bottom: 2px solid #d63384;
+            padding-bottom: 10px;
+            margin-bottom: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #b0497a;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 45px 12px 14px;
+            border: 1.5px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 15px;
+            color: #3d0026;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: #d63384;
+            outline: none;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 68%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #d63384;
+            padding: 4px 6px;
+        }
+
+        .password-toggle:hover { opacity: 0.7; }
+
+        .save-btn {
+            width: 100%;
+            padding: 13px;
+            background: #d63384;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            margin-top: 6px;
+            transition: background 0.2s;
+        }
+
+        .save-btn:hover { background: #b62a70; }
+
+        /* ── ABOUT ── */
+        
+
+        .about-card p {
+            color: #5a2a3e;
+            font-size: 25px;
+            line-height: 1.85;
+            font-family: "Times new roman";
+            margin-bottom: 14px;
+        }
+
+        .about-card p:last-child { margin-bottom: 0; }
+
+        /* ── FAQ ── */
+        .faq-item {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(214, 51, 132, 0.15);
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(214, 51, 132, 0.06);
+        }
+
+        .faq-question {
+            padding: 15px 18px;
+            font-size: 20px;
+            font-weight: 600;
+            color: #3d0026;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            transition: background 0.2s;
+        }
+
+        .faq-question:hover { background: #fef0f7; }
+
+        .faq-toggle {
+            font-size: 20px;
+            color: #d63384;
+            font-weight: bold;
+            transition: transform 0.3s;
+            flex-shrink: 0;
+        }
+
+        .faq-toggle.open { transform: rotate(45deg); }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease, padding 0.3s ease;
+            background: #fffafc;
+        }
+
+        .faq-answer.active {
+            max-height: 300px;
+            padding: 14px 18px;
+        }
+
+        .faq-answer p {
+            font-size: 18px;
+            color: #5a2a3e;
+            line-height: 1.75;
+        }
+
+        /* ── CONTACT ── */
+        .contact-card {
+            background: white;
+            border-radius: 14px;
+            padding: 26px;
+            border: 1px solid rgba(214, 51, 132, 0.15);
+            box-shadow: 0 3px 12px rgba(214, 51, 132, 0.08);
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            max-width: 420px;
+        }
+
+        .contact-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: "Times New Roman";
+            font-size: 40px;
+            line-height: 1.8;
+        }
+
+        .contact-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 30%;
+            vertical-align: middle;
+            flex-shrink: 0;
+            font-size: 40px;
+        }
+
+        .contact-icon.fb { background: #3b5998; }
+        .contact-icon.ph { background: #28a745; }
+        .contact-icon.em { background: #d63384; }
+        .contact-icon.lo { background: #e67e22; }
+
+        .contact-row a {
+            color: #d63384;
+            text-decoration: none;
+            transition: 0.2s;
+            font-size: 25px;
+        }
+
+        .contact-row a:hover { text-decoration: underline; }
+        .contact-row span { font-size: 30px; }
+
+        /* ── NOTIFICATION ── */
+        .notification {
+            position: fixed;
+            top: 90px;
+            right: 20px;
+            background: white;
+            border: 2px solid #d63384;
+            border-radius: 12px;
+            padding: 14px 22px;
+            box-shadow: 0 8px 25px rgba(214, 51, 132, 0.2);
+            z-index: 9999;
+            max-width: 360px;
+            font-size: 15px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .notification.success {
+            border-color: #28a745;
+            background: linear-gradient(135deg, #f8fff9, #d4edda);
+            color: #155724;
+        }
+
+        .notification.error {
+            border-color: #dc3545;
+            background: linear-gradient(135deg, #fff5f5, #f8d7da);
+            color: #721c24;
+        }
+
+        .notification.active {
+            display: block;
+            animation: slideInRight 0.35s ease;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(120%); opacity: 0; }
+            to   { transform: translateX(0);    opacity: 1; }
+        }
+
+        /* ── LOGOUT DIALOG ── */
+        .dialog-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.35);
+            z-index: 9998;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dialog-overlay.active { display: flex; }
+
+        .dialog-box {
+            background: white;
+            border-radius: 16px;
+            padding: 36px 32px 28px;
+            max-width: 380px;
+            width: 90%;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+            text-align: center;
+            animation: popIn 0.25s ease;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.92); opacity: 0; }
+            to   { transform: scale(1);    opacity: 1; }
+        }
+
+        .dialog-box h3 {
+            font-family: "Times New Roman";
+            font-size: 22px;
+            color: #3d0026;
+            margin-bottom: 10px;
+        }
+
+        .dialog-box p {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 28px;
+            line-height: 1.6;
+        }
+
+        .dialog-btns {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .dialog-btns button {
+            padding: 11px 30px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: 0.2s;
+        }
+
+        .btn-cancel {
+            background: #f0f0f0;
+            color: #555;
+        }
+
+        .btn-cancel:hover { background: #e0e0e0; }
+
+        .btn-logout {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-logout:hover { background: #c82333; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1024px) {
+            section { padding: 30px 25px 60px; }
+            h1 { font-size: 42px; margin-bottom: 30px; }
+            .settings-section h2 { font-size: 24px; }
+            input, textarea { padding: 12px; font-size: 13px; }
+            .form-group { margin-bottom: 18px; }
+            label { font-size: 13px; }
+        }
+
+        @media (max-width: 768px) {
+            section { padding: 20px 15px 60px; }
+            h1 { font-size: 32px; margin-bottom: 22px; }
+
+            .settings-container { grid-template-columns: 1fr; }
+
+            .settings-menu {
+                flex-direction: row;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                border-right: none;
+                border-bottom: 2px solid #fce0ef;
+                padding: 10px 0 0;
+            }
+
+            .menu-label, .menu-spacer, .settings-menu-divider { display: none; }
+
+            .settings-menu-item {
+                padding: 12px 14px;
+                font-size: 12px;
+                border-left: none;
+                border-bottom: 3px solid transparent;
+                white-space: nowrap;
+                flex-shrink: 0;
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+            }
+
+            .settings-menu-item.active {
+                border-left: none;
+                border-bottom-color: #d63384;
+                background: white;
+            }
+
+            .settings-content-area { padding: 20px 16px; }
+            .settings-section h2 { font-size: 20px; margin-bottom: 16px; }
+            .account-layout { flex-direction: column; }
+            .account-left { width: 100%; }
+            .form-group { margin-bottom: 14px; }
+            label { font-size: 12px; margin-bottom: 5px; }
+            input, textarea { padding: 10px; font-size: 12px; }
+            
+            .nav-menu { gap: 10px; }
+            .nav-menu a { padding: 12px; font-size: 14px; }
+        }
+
+        @media (max-width: 600px) {
+            section { padding: 15px 12px 50px; }
+            h1 { font-size: 24px; margin-bottom: 18px; }
+
+            .settings-container { grid-template-columns: 1fr; gap: 15px; }
+
+            .settings-menu {
+                flex-direction: row;
+                overflow-x: auto;
+                border-bottom: 2px solid #fce0ef;
+                padding: 8px 0 0;
+            }
+
+            .settings-menu-item {
+                padding: 10px 12px;
+                font-size: 11px;
+                border-bottom: 3px solid transparent;
+                white-space: nowrap;
+                flex-shrink: 0;
+                min-height: 40px;
+                display: flex;
+                align-items: center;
+            }
+
+            .settings-menu-item.active { border-bottom-color: #d63384; }
+
+            .settings-content-area { padding: 16px 12px; }
+            .settings-section h2 { font-size: 16px; margin-bottom: 14px; }
+            .settings-section p { font-size: 12px; }
+            
+            .account-layout { flex-direction: column; gap: 12px; }
+            .account-left { width: 100%; }
+            .account-info-group { margin-bottom: 12px; }
+            
+            .form-group { margin-bottom: 12px; }
+            label { 
+                font-size: 11px; 
+                margin-bottom: 4px;
+                display: block;
+            }
+            input, textarea { 
+                padding: 9px; 
+                font-size: 11px;
+                border-radius: 6px;
+                width: 100%;
+            }
+            
+            .nav-menu { gap: 8px; }
+            .nav-menu a { padding: 10px 8px; font-size: 12px; }
+        }
+
+        @media (max-width: 480px) {
+            section { padding: 12px 10px 45px; }
+            h1 { font-size: 20px; margin-bottom: 16px; }
+
+            .settings-menu {
+                flex-direction: row;
+                overflow-x: auto;
+                padding: 6px 0 0;
+            }
+
+            .settings-menu-item {
+                padding: 8px 10px;
+                font-size: 10px;
+                border-bottom: 2px solid transparent;
+                flex-shrink: 0;
+                min-height: 38px;
+            }
+
+            .settings-content-area { padding: 12px 10px; }
+            .settings-section h2 { font-size: 14px; margin-bottom: 12px; }
+            .settings-section p { font-size: 11px; }
+            
+            .form-group { margin-bottom: 10px; }
+            label { 
+                font-size: 10px; 
+                margin-bottom: 3px;
+            }
+            input, textarea { 
+                padding: 8px; 
+                font-size: 10px;
+                border-radius: 5px;
+            }
+            textarea { min-height: 100px; }
+            
+            .nav-menu { gap: 5px; }
+            .nav-menu a { padding: 8px 6px; font-size: 11px; }
+        }
+
+        @media (max-height: 500px) and (orientation: landscape) {
+            section { padding: 15px 12px 40px; }
+            h1 { font-size: 22px; margin-bottom: 15px; }
+            .settings-section h2 { font-size: 15px; margin-bottom: 10px; }
+            .form-group { margin-bottom: 10px; }
+            label { font-size: 11px; }
+            input, textarea { padding: 8px; font-size: 11px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo-nav">
+            <img src="image6.jpg" alt="Mystic Charms Logo" class="logo-img">
+            Mystic Charms
+        </div>
+        
+        <ul class="nav-menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#bracelets">Bracelets</a></li>
+            <li><a href="index.html#keychain">Keychain</a></li>
+        </ul>
+        
+        <div class="nav-icons">
+            <a href="cart.html" title="View Cart">
+                <img src="fav.jpg" class="icon" id="heartIcon" alt="Cart">
+            </a>
+            <a href="orders.html" title="View Orders">
+                <img src="orders.png" class="icon" id="orderIcon" alt="Orders">
+            </a>
+            <a href="settings.html" title="Settings">
+                <img src="settings-icon.png" alt="Settings" class="icon">
+            </a>
+            <div class="user-menu">
+                <div class="user-profile" onclick="toggleUserMenu()">
+                    <div class="user-profile-icon" id="userInitial">U</div>
+                    <span id="userName">User</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section id="settings">
+        <h1>Settings</h1>
+
+        <div class="settings-container">
+
+            <!-- LEFT MENU -->
+            <div class="settings-menu">
+                <div class="menu-label">My Account</div>
+
+                <div class="settings-menu-item active" onclick="showSection('account', this)">
+                    Account &amp; Security
+                </div>
+                <div class="settings-menu-item" onclick="showSection('about', this)">
+                    About Us
+                </div>
+                <div class="settings-menu-item" onclick="showSection('faqs', this)">
+                    FAQs
+                </div>
+                <div class="settings-menu-item" onclick="showSection('contact', this)">
+                    Contact Us
+                </div>
+
+                <div class="menu-spacer"></div>
+                <div class="settings-menu-divider"></div>
+
+                <div class="settings-menu-item logout-item" onclick="openLogoutDialog()">
+                    Log Out
+                </div>
+            </div>
+
+            <!-- RIGHT CONTENT -->
+            <div class="settings-content-area">
+
+                <!-- ACCOUNT & SECURITY -->
+                <div class="settings-section active" id="account-section">
+                    <h2>Account &amp; Security</h2>
+                    <div class="account-layout">
+
+                        <!-- left options -->
+                        <div class="account-left">
+                            <div class="panel-title">Change Info</div>
+
+                            <div class="acct-opt" id="opt-fullname" onclick="openEdit('fullname')">
+                                <div>
+                                    <div class="acct-opt-label">Full Name</div>
+                                    <div class="acct-opt-value" id="fullname-display">Loading...</div>
+                                </div>
+                                <span class="acct-arrow">›</span>
+                            </div>
+
+                            <div class="acct-opt" id="opt-mobile" onclick="openEdit('mobile')">
+                                <div>
+                                    <div class="acct-opt-label">Mobile</div>
+                                    <div class="acct-opt-value" id="mobile-display">Loading...</div>
+                                </div>
+                                <span class="acct-arrow">›</span>
+                            </div>
+
+                            <div class="acct-opt" id="opt-email" onclick="openEdit('email')">
+                                <div>
+                                    <div class="acct-opt-label">Email</div>
+                                    <div class="acct-opt-value" id="email-display">Loading...</div>
+                                </div>
+                                <span class="acct-arrow">›</span>
+                            </div>
+
+                            <div class="acct-opt" id="opt-password" onclick="openEdit('password')">
+                                <div>
+                                    <div class="acct-opt-label">Password</div>
+                                    <div class="acct-opt-value">••••••••</div>
+                                </div>
+                                <span class="acct-arrow">›</span>
+                            </div>
+                        </div>
+
+                        <!-- right edit panel -->
+                        <div class="account-right" id="editPanel">
+                            <div class="edit-box">
+                                <div class="edit-box-title" id="edit-title">Edit</div>
+
+                                <!-- normal field -->
+                                <div class="form-group" id="normal-field-group">
+                                    <label id="edit-label">Value</label>
+                                    <input type="text" id="edit-input" placeholder="">
+                                </div>
+
+                                <!-- password fields -->
+                                <div id="passwordFields" style="display:none;">
+                                    <div class="form-group">
+                                        <label>Current Password</label>
+                                        <input type="password" id="currentPassword" placeholder="Enter current password">
+                                        <button type="button" class="password-toggle" onclick="togglePassword('currentPassword')">Show</button>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>New Password</label>
+                                        <input type="password" id="newPassword" placeholder="Enter new password">
+                                        <button type="button" class="password-toggle" onclick="togglePassword('newPassword')">Show</button>
+                                    </div>
+                                </div>
+
+                                <button class="save-btn" onclick="saveChanges()">Save Changes</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ABOUT US -->
+                <div class="settings-section" id="about-section">
+                    <h2>About Us</h2>
+                    <div class="about-card">
+                        <p>Mystic Charms started as a school project and grew into a small business inspired by creativity, softness, and self-expression. Each piece is made to match your mood and style.</p>
+                        <p>What began as experimenting with beads, tiny charms, and different styles grew into pieces designed for mixing, matching, and stacking with ease. Each piece is thoughtfully made to add a subtle touch of charm and personality to your everyday look.</p>
+                        <p>From a classroom project to a growing small business, Mystic Charms is all about self-expression — your style, your mood, your rules.</p>
+                    </div>
+                </div>
+
+                <!-- FAQs -->
+                <div class="settings-section" id="faqs-section">
+                    <h2>Frequently Asked Questions</h2>
+                    <div style="margin-top: 10px;">
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFAQ(this)">
+                                <span>Do you accept returns or offer refunds?</span>
+                                <span class="faq-toggle">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                <p>We currently do not offer a return policy due to the nature of our products, as most items are handmade and customized based on the customer's request. However, if your order arrives damaged, you may contact us within 48 hours and provide clear photo proof. We will gladly offer a replacement or a refund depending on the situation.</p>
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFAQ(this)">
+                                <span>How long does order processing and delivery take?</span>
+                                <span class="faq-toggle">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Orders are usually processed and delivered within 2–3 days, depending on the quantity of items purchased. For bulk orders exceeding five items, processing and delivery may take 3–5 days.</p>
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFAQ(this)">
+                                <span>Are the crystals authentic?</span>
+                                <span class="faq-toggle">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Our products are not made from high-end or premium materials, but we make sure that they are of good quality and worth their price range of ₱75–₱80.</p>
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFAQ(this)">
+                                <span>Can I customize my order?</span>
+                                <span class="faq-toggle">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Yes, customization is available. You may contact us through our social media accounts and send your preferred design or idea. We will do our best to create a product based on your request.</p>
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFAQ(this)">
+                                <span>What payment methods do you accept?</span>
+                                <span class="faq-toggle">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                <p>We accept online payments through GCash by scanning our QR code. We also offer Cash on Delivery (COD) for customers who prefer to pay upon receiving their order.</p>
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFAQ(this)">
+                                <span>Can I cancel my order?</span>
+                                <span class="faq-toggle">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Orders can only be canceled before they are processed. Once the item is already being prepared or shipped, cancellation is no longer allowed.</p>
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFAQ(this)">
+                                <span>Do you offer gift wrapping?</span>
+                                <span class="faq-toggle">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Yes, we offer gift wrapping for an additional fee. You may message us in advance if you want this service. We can also include a short personalized message for your gift.</p>
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFAQ(this)">
+                                <span>Where are you located?</span>
+                                <span class="faq-toggle">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                <p>We are based in Daet, Camarines Norte, and orders are shipped from our location.</p>
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFAQ(this)">
+                                <span>Can I track my order?</span>
+                                <span class="faq-toggle">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Yes, you can track your order by checking the "My Orders" section on our website. Updates regarding your order status will be shown there.</p>
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFAQ(this)">
+                                <span>What makes your charms special?</span>
+                                <span class="faq-toggle">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Our charms are designed to be simple, meaningful, and affordable. Each piece is carefully made with attention to detail to ensure both quality and aesthetic appeal, making them a great choice for personal use or as gifts.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONTACT US -->
+                <div class="settings-section" id="contact-section">
+                    <h2>Contact Us</h2>
+                    <div class="contactcard">
+            <div class="contact-row">
+                <img src="image5.jpg" alt="Mystic Charms Logo" class="contact-logo">
+                <a href="https://www.facebook.com/profile.php?id=61574566044941" target="_blank">MYSTIC CHARMS</a>
+            </div>
+            <div class="contact-row">
+                <img src="image7.jpg" alt="Number logo" class="contact-logo">
+                <span>09295371650</span>
+            </div>
+            
+            <div class="contact-row">
+                <img src="image9.jpg" alt="Email logo" class="contact-logo">
+                <a href="mailto:mystic.charms001@gmail.com">
+                <span>mystic.charms001@gmail.com</span>
+                </a>
+            </div>
+
+            
+            <div class="contact-row">
+                <img src="image8.jpg" alt="Location logo" class="contact-logo">
+                <span>Daet, Camarines Norte</span>
+            </div>
+        </div>
+
+            </div><!-- end content area -->
+        </div><!-- end container -->
+    </section>
+
+    <footer style="text-align:center; padding:20px; background:#d63384; color:white;">
+        &copy; 2026 Mystic Charms
+    </footer>
+
+    <!-- LOGOUT DIALOG -->
+    <div class="dialog-overlay" id="logoutDialog">
+        <div class="dialog-box">
+            <h3>Log Out</h3>
+            <p>Are you sure you want to log out of your account?</p>
+            <div class="dialog-btns">
+                <button class="btn-cancel" onclick="closeLogoutDialog()">Cancel</button>
+                <button class="btn-logout" onclick="confirmLogout()">Log Out</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION -->
+    <div class="notification" id="notification">
+        <span id="notificationText"></span>
+    </div>
+
+    <!-- FIREBASE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+        import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-database.js";
+
+        const app = initializeApp({
+            apiKey: "AIzaSyCDCdTMCcFZEts9nYT0ILUeN_v7YY09380",
+            authDomain: "mywebsite-829b5.firebaseapp.com",
+            databaseURL: "https://mywebsite-829b5-default-rtdb.firebaseio.com"
+        });
+
+        const db = getDatabase(app);
+        let user = null;
+        let userKey = null;
+        let currentField = "";
+
+        /* LOAD USER */
+        window.addEventListener("load", async () => {
+            const session = JSON.parse(localStorage.getItem("userLogin"));
+            if (!session) return location.href = "login.html";
+
+            // Set nav display
+            const userId = session.userId || session.email || session.mobile || "";
+            document.getElementById("userInitial").textContent = userId.charAt(0).toUpperCase();
+            if (session.type === "email") {
+                document.getElementById("userName").textContent = userId.split("@")[0];
+            } else {
+                document.getElementById("userName").textContent = userId.substring(userId.length - 4);
+            }
+
+            const snap = await get(ref(db, "users"));
+            if (snap.exists()) {
+                for (const key in snap.val()) {
+                    const u = snap.val()[key];
+                    if (u.email === session.email || u.mobile === session.mobile || u.email === session.userId) {
+                        user = u;
+                        userKey = key;
+                        break;
+                    }
+                }
+            }
+
+            if (!user) return showNotification("User not found.", true);
+            updateUI();
+        });
+
+        function updateUI() {
+            document.getElementById("fullname-display").textContent = user.fullname || "—";
+            document.getElementById("mobile-display").textContent   = user.mobile   || "—";
+            document.getElementById("email-display").textContent    = user.email    || "—";
+        }
+
+        /* OPEN EDIT */
+        window.openEdit = (field) => {
+            currentField = field;
+
+            // clear selected
+            document.querySelectorAll(".acct-opt").forEach(o => o.classList.remove("selected"));
+            document.getElementById("opt-" + field).classList.add("selected");
+
+            // show panel
+            const panel = document.getElementById("editPanel");
+            panel.classList.remove("active");
+            void panel.offsetWidth; // reflow to restart animation
+            panel.classList.add("active");
+
+            document.getElementById("edit-title").textContent = "Edit " + field.charAt(0).toUpperCase() + field.slice(1);
+
+            if (field === "password") {
+                document.getElementById("normal-field-group").style.display = "none";
+                document.getElementById("passwordFields").style.display = "block";
+                document.getElementById("currentPassword").value = "";
+                document.getElementById("newPassword").value = "";
+                document.getElementById("currentPassword").focus();
+            } else {
+                document.getElementById("normal-field-group").style.display = "block";
+                document.getElementById("passwordFields").style.display = "none";
+                document.getElementById("edit-label").textContent = field.charAt(0).toUpperCase() + field.slice(1);
+                document.getElementById("edit-input").value = user[field] || "";
+                document.getElementById("edit-input").placeholder = "Enter " + field;
+                document.getElementById("edit-input").focus();
+            }
+        };
+
+        /* SAVE */
+        window.saveChanges = async () => {
+            if (!user) return;
+
+            try {
+                if (currentField === "password") {
+                    const cur = document.getElementById("currentPassword").value;
+                    const nw  = document.getElementById("newPassword").value;
+
+                    if (!cur)                        return showNotification("Please enter your current password.", true);
+                    if (cur !== user.password)       return showNotification("Current password is incorrect.", true);
+                    if (!nw)                         return showNotification("Please enter a new password.", true);
+                    if (nw.length < 6)               return showNotification("New password must be at least 6 characters.", true);
+
+                    user.password = nw;
+
+                } else {
+                    const value = document.getElementById("edit-input").value.trim();
+                    if (!value) return showNotification("Please enter a value.", true);
+
+                    if (currentField === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
+                        return showNotification("Please enter a valid email address.", true);
+
+                    if (currentField === "mobile" && !/^\+?[1-9]\d{6,14}$/.test(value.replace(/\s/g, "")))
+                        return showNotification("Please enter a valid mobile number.", true);
+
+                    user[currentField] = value;
+                }
+
+                await set(ref(db, "users/" + userKey), user);
+
+                // update session
+                const session = JSON.parse(localStorage.getItem("userLogin"));
+                if (currentField !== "password") session[currentField] = user[currentField];
+                localStorage.setItem("userLogin", JSON.stringify(session));
+
+                updateUI();
+                showNotification(currentField.charAt(0).toUpperCase() + currentField.slice(1) + " updated successfully!", false);
+
+                // close panel
+                document.getElementById("editPanel").classList.remove("active");
+                document.querySelectorAll(".acct-opt").forEach(o => o.classList.remove("selected"));
+
+            } catch (err) {
+                console.error(err);
+                showNotification("Failed to save. Please try again.", true);
+            }
+        };
+
+        /* PASSWORD TOGGLE */
+        window.togglePassword = (id) => {
+            const input  = document.getElementById(id);
+            const toggle = input.nextElementSibling;
+            if (input.type === "password") {
+                input.type = "text";
+                toggle.textContent = "Hide";
+            } else {
+                input.type = "password";
+                toggle.textContent = "Show";
+            }
+        };
+
+        /* NOTIFICATION */
+        function showNotification(msg, isError) {
+            const n = document.getElementById("notification");
+            document.getElementById("notificationText").textContent = msg;
+            n.className = "notification " + (isError ? "error" : "success");
+            n.classList.add("active");
+            setTimeout(() => n.classList.remove("active"), 3500);
+        }
+        window.showNotification = showNotification;
+
+        /* LOGOUT */
+        window.confirmLogout = () => {
+            localStorage.removeItem("userLogin");
+            window.location.href = "login.html";
+        };
+    </script>
+
+    <script>
+        /* SECTION SWITCHING */
+        function showSection(id, el) {
+            document.querySelectorAll(".settings-section").forEach(s => s.classList.remove("active"));
+            document.querySelectorAll(".settings-menu-item").forEach(m => m.classList.remove("active"));
+            document.getElementById(id + "-section").classList.add("active");
+            el.classList.add("active");
+        }
+
+        /* FAQ */
+        function toggleFAQ(el) {
+            const ans = el.nextElementSibling;
+            const tog = el.querySelector(".faq-toggle");
+            const open = ans.classList.contains("active");
+            document.querySelectorAll(".faq-answer").forEach(a => a.classList.remove("active"));
+            document.querySelectorAll(".faq-toggle").forEach(t => t.classList.remove("open"));
+            if (!open) { ans.classList.add("active"); tog.classList.add("open"); }
+        }
+
+        /* LOGOUT DIALOG */
+        function openLogoutDialog()  { document.getElementById("logoutDialog").classList.add("active"); }
+        function closeLogoutDialog() { document.getElementById("logoutDialog").classList.remove("active"); }
+
+        // close dialog if clicking outside the box
+        document.getElementById("logoutDialog").addEventListener("click", function(e) {
+            if (e.target === this) closeLogoutDialog();
+        });
+
+        /* USER MENU */
+        function toggleUserMenu() {
+            const d = document.getElementById("userDropdown");
+            if (d) d.classList.toggle("show");
+        }
+
+        document.addEventListener("click", function(e) {
+            const menu = document.querySelector(".user-menu");
+            const d = document.getElementById("userDropdown");
+            if (menu && d && !menu.contains(e.target)) d.classList.remove("show");
+        });
+    </script>
+</body>
+</html>
